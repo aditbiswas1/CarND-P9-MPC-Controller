@@ -105,11 +105,16 @@ Lf    = distance between centre of mass and front wheel
 
 
 ### timestep length N and elapsed duration dt
-We chose N and dt to be 10 and 0.1 after trial and errors of different value pairs such as (16, 0.2), (8, 0.02) etc.
+We chose N and dt to be 10 and 0.1 after trial and errors of different value pairs such as 
+(16, 0.2) - at these values the car has a large cte when driving and goes on the side of the expected track, 
+(8, 0.02) - at these values the model isnt predicted far enough and the car tends to go off track and crash the walls
+etc.
 
 
 ### MPC preprocessing 
 We transformed the waypoints to the vehicles perspective which makes the polyfit easier since we treat the vehicle's coordinates as origin.
 
 ### mpc latency 
+we modified the kinematic equations to make the model predict 100ms into the future to account for the delay.
+
 we modify the cost functions to punish CTE, epsi, velocity - reference velocity and change in acceleration to improve the control of the vehicle better.
