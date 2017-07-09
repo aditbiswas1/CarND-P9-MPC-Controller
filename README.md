@@ -82,7 +82,7 @@ for instructions and the project rubric.
 
 ## Model
 
-** state , actuator and update equations **
+### state , actuator and update equations 
 We use a kinematic bicycle model here which depends on the postion, heading direction, cross track error and orientation error into account to model the vehicles motion. It neglects dynamic forces like inertia, tire friction and internal forces of the car but is a decent approximation of the motion of the vehicle.
 
 We can express the model with the equations
@@ -104,12 +104,12 @@ epsi  = orientation error
 Lf    = distance between centre of mass and front wheel
 
 
-** timestep length N and elapsed duration dt **
+### timestep length N and elapsed duration dt
 We chose N and dt to be 10 and 0.1 after trial and errors of different value pairs such as (16, 0.2), (8, 0.02) etc.
 
 
-** MPC preprocessing **
+### MPC preprocessing 
 We transformed the waypoints to the vehicles perspective which makes the polyfit easier since we treat the vehicle's coordinates as origin.
 
-** mpc latency **
+### mpc latency 
 we modify the cost functions to punish CTE, epsi, velocity - reference velocity and change in acceleration to improve the control of the vehicle better.
