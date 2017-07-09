@@ -80,36 +80,36 @@ More information is only accessible by people who are already enrolled in Term 2
 of CarND. If you are enrolled, see [the project page](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/f1820894-8322-4bb3-81aa-b26b3c6dcbaf/lessons/b1ff3be0-c904-438e-aad3-2b5379f0e0c3/concepts/1a2255a0-e23c-44cf-8d41-39b8a3c8264a)
 for instructions and the project rubric.
 
-## Hints!
+## Model
 
-* You don't have to follow this directory structure, but if you do, your work
-  will span all of the .cpp files here. Keep an eye out for TODOs.
+** state , actuator and update equations **
+We use a kinematic bicycle model here which depends on the postion, heading direction, cross track error and orientation error into account to model the vehicles motion. It neglects dynamic forces like inertia, tire friction and internal forces of the car but is a decent approximation of the motion of the vehicle.
 
-## Call for IDE Profiles Pull Requests
+We can express the model with the equations
 
-Help your fellow students!
+```
+      // x_[t+1] = x[t] + v[t] * cos(psi[t]) * dt
+      // y_[t+1] = y[t] + v[t] * sin(psi[t]) * dt
+      // psi_[t+1] = psi[t] + v[t] / Lf * delta[t] * dt
+      // v_[t+1] = v[t] + a[t] * dt
+      // cte[t+1] = f(x[t]) - y[t] + v[t] * sin(epsi[t]) * dt
+      // epsi[t+1] = psi[t] - psides[t] + v[t] * delta[t] / Lf * dt
+```
 
-We decided to create Makefiles with cmake to keep this project as platform
-agnostic as possible. Similarly, we omitted IDE profiles in order to we ensure
-that students don't feel pressured to use one IDE or another.
+(x,y) = position of hte car.
+psi   = heading direction
+v     = velocity
+ctr   = cross-track error
+epsi  = orientation error
+Lf    = distance between centre of mass and front wheel
 
-However! I'd love to help people get up and running with their IDEs of choice.
-If you've created a profile for an IDE that you think other students would
-appreciate, we'd love to have you add the requisite profile files and
-instructions to ide_profiles/. For example if you wanted to add a VS Code
-profile, you'd add:
 
-* /ide_profiles/vscode/.vscode
-* /ide_profiles/vscode/README.md
+** timestep length N and elapsed duration dt **
+We chose N and dt to be 10 and 0.1 after trial and errors of different value pairs such as (16, 0.2), (8, 0.02) etc.
 
-The README should explain what the profile does, how to take advantage of it,
-and how to install it.
 
-Frankly, I've never been involved in a project with multiple IDE profiles
-before. I believe the best way to handle this would be to keep them out of the
-repo root to avoid clutter. My expectation is that most profiles will include
-instructions to copy files to a new location to get picked up by the IDE, but
-that's just a guess.
+** MPC preprocessing **
+We transformed the waypoints to the vehicles perspective which makes the polyfit easier since we treat the vehicle's coordinates as origin.
 
-One last note here: regardless of the IDE used, every submitted project must
-still be compilable with cmake and make./
+** mpc latency **
+we modify the cost functions to punish CTE, epsi, velocity - reference velocity and change in acceleration to improve the control of the vehicle better.
