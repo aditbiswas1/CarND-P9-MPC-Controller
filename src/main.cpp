@@ -123,7 +123,15 @@ int main() {
           double throttle_value = j[1]["throttle"];
 
           Eigen::VectorXd state(6);
-          state << 0, 0, 0, v, cte, epsi;
+          double latency = 0.1;
+          double Lf = 2.67;
+          px = v*latency;
+          py = 0;
+          psi = -v*steer_value*latency/Lf;
+          epsi +=  psi; 
+          cte+=v*sin(epsi)*latency;
+          v += throttle_value*latency;
+          state<<px,py,psi,v,cte,epsi;
           auto vars = mpc.Solve(state, coeffs);
           steer_value = vars[0];
           throttle_value = vars[1];

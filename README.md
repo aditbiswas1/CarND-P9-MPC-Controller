@@ -118,7 +118,19 @@ We transformed the waypoints to the vehicles perspective which makes the polyfit
 
 ### mpc latency 
 we modified the kinematic equations to make the model predict 100ms into the future to account for the delay.
-specifically we bumped up the values of the fg array by index of 1 to make the model predict 1 step into the future first and the remaining updates are affected by that. the changes are on line 81 of MPC.c.
+we initialized the initial state while passing into the mpc by applying the kinematic equations for the first 100ms;
+this is found in the main.cpp
+```
+          double latency = 0.1;
+          double Lf = 2.67;
+          px = v*latency;
+          py = 0;
+          psi = -v*steer_value*latency/Lf;
+          epsi +=  psi; 
+          cte+=v*sin(epsi)*latency;
+          v += throttle_value*latency;
+          state<<px,py,psi,v,cte,epsi;
+```
 
 
 we modify the cost functions to punish CTE, epsi, velocity - reference velocity and change in acceleration to improve the control of the vehicle better.
