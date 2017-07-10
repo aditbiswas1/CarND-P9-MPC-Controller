@@ -108,7 +108,9 @@ Lf    = distance between centre of mass and front wheel
 We chose N and dt to be 10 and 0.1 after trial and errors of different value pairs such as 
 (16, 0.2) - at these values the car has a large cte when driving and goes on the side of the expected track, 
 (8, 0.02) - at these values the model isnt predicted far enough and the car tends to go off track and crash the walls
-etc.
+
+By choosing N to be 10 * 0.1 we make the model determine the correct trajectory for 1 second periods.
+
 
 
 ### MPC preprocessing 
@@ -116,5 +118,7 @@ We transformed the waypoints to the vehicles perspective which makes the polyfit
 
 ### mpc latency 
 we modified the kinematic equations to make the model predict 100ms into the future to account for the delay.
+specifically we bumped up the values of the fg array by index of 1 to make the model predict 1 step into the future first and the remaining updates are affected by that. the changes are on line 81 of MPC.c.
+
 
 we modify the cost functions to punish CTE, epsi, velocity - reference velocity and change in acceleration to improve the control of the vehicle better.
